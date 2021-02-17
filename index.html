@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>REST Form Demo</title>
+    <title>Yuyao's Lab 7</title>
 
     <style>
       body {
@@ -79,12 +79,33 @@
 
     <!-- Main Script -->
     <script type="module">
+
+      const author = document.getElementById("author");
+      const title = document.getElementById("title");
+      const endpoint = document.getElementById("endpoint");
+      const output = document.getElementById("output");
+
       // This function should fetch all of the data from the given endpoint.
       // From the 4 CRUD actions, this is the READ action, and uses the GET http method.
       // The main difference from fetchOne() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchAll() {
-        // TODO
+        const recordForm = document.getElementById("recordForm");
+        const recordIDcontainer = document.getElementById("recordIDcontainer");
+        recordForm.style.display = "none";
+        recordIDcontainer.style.display = "none";
+
+        fetch(endpoint.value, {
+          method: 'GET'
+        })
+          .then(response => {
+            if (!response.ok)
+            output.value = "Network Error: " + response.status;
+            else
+            response.json().then(input => 
+            output.value = JSON.stringify(input)
+            );
+          });
       }
 
       // This function should fetch one entry from the given endpoint.
@@ -92,23 +113,99 @@
       // The main difference from fetchAll() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchOne() {
-        // TODO
+        const recordForm = document.getElementById("recordForm");
+        const recordIDcontainer = document.getElementById("recordIDcontainer");
+        recordForm.style.display = "none";
+        recordIDcontainer.style.display = "none";
+
+        let id = prompt("Enter record id");
+        fetch(endpoint.value + "/" + String(id), {
+          method: 'GET'
+        })
+          .then(response => {
+            if (!response.ok)
+            output.value = "Network Error: " + response.status;
+            else
+            response.json().then(input => 
+            output.value = JSON.stringify(input)
+            );
+          });
       }
 
       // This function should use fetch to create one entry in the given endpoint.
       // From the 4 CRUD actions, this is the CREATE action, and uses the POST http method.
       // The main difference from updateRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
-      function createRecord() {
-        // TODO
+      function createRecord(action) {
+        const recordForm = document.getElementById("recordForm");
+        const recordIDcontainer = document.getElementById("recordIDcontainer");
+
+        if (action === "show") {
+          recordForm.title.value = "";
+          recordForm.author.value = "";
+          recordForm.style.display = "block";
+          recordIDcontainer.style.display = "none";
+        }
+        else {
+            const input = {
+              author:author.value,
+              title:title.value
+            }
+            fetch(endpoint.value, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json; charset=UTF-8"
+              },
+              body: JSON.stringify(input)
+            })
+              .then(response => {
+                if (!response.ok)
+                output.value = "Network Error: " + response.status;
+                else
+                response.json().then(input => 
+                output.value = JSON.stringify(input)
+                );
+              });
+        }
       }
 
       // This function should use fetch to update one existing entry in the given endpoint.
       // From the 4 CRUD actions, this is the UPDATE action, and uses the PUT http method.
       // The main difference from createRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
-      function updateRecord() {
-        // TODO
+      function updateRecord(action) {
+        const recordForm = document.getElementById("recordForm");
+        const recordIDcontainer = document.getElementById("recordIDcontainer");
+        const recordID = document.getElementById("recordID");
+
+        if (action === "show") {
+          recordForm.title.value = "";
+          recordForm.author.value = "";
+          recordID.value = "";
+          recordForm.style.display = "block";
+          recordIDcontainer.style.display = "block";
+        }
+        else {
+            const input = {
+              author:author.value,
+              title:title.value
+            }
+            fetch(endpoint.value + "/" + String(recordID.value), {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json; charset=UTF-8"
+              },
+              body: JSON.stringify(input)
+            })
+              .then(response => {
+                if (!response.ok)
+                output.value = "Network Error: " + response.status;
+                else
+                response.json().then(input => 
+                output.value = JSON.stringify(input)
+                );
+              });
+        }
       }
 
       // This function should use fetch to delete one existing entry in the given endpoint.
@@ -117,7 +214,23 @@
       // request; check the writeup to view the URL pattern for get one and delete. THERE IS NO 
       // delete all, only delete one.
       function deleteRecord() {
-        // TODO
+        const recordForm = document.getElementById("recordForm");
+        const recordIDcontainer = document.getElementById("recordIDcontainer");
+        recordForm.style.display = "none";
+        recordIDcontainer.style.display = "none";
+  
+        let id = prompt("Enter record id");
+        fetch(endpoint.value + "/" + String(id), {
+          method: "DELETE"
+        })
+          .then(response => {
+            if (!response.ok)
+            output.value = "Network Error: " + response.status;
+            else
+            response.json().then(input => 
+            output.value = JSON.stringify(input)
+            );
+          });
       }
 
       window.addEventListener('DOMContentLoaded', () => {
